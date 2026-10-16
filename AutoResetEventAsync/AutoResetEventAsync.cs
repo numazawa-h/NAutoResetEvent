@@ -7,6 +7,14 @@ using System.Threading.Tasks;
 
 namespace AutoResetEventAsync
 {
+    /// <summary>
+    /// AutoResetEventのラッパークラス
+    /// 【機能】
+    /// 1. Cancel
+    ///   自動でCancellationTokenを生成し、Cancel() で待機中のタスクを全てキャンセル
+    /// 2. 待機順にタスクを実行
+    ///   コンストラクタやReset()の引数指定により、Wait() した順にタスクが実行されるようになる
+    /// </summary>
     public class AutoResetEventAsync
     {
         private bool _init_sw;
@@ -18,6 +26,11 @@ namespace AutoResetEventAsync
         private Queue<int> _seq = new Queue<int>();
         private bool _canceled = false;
 
+        /// <summary>
+        /// コンストラクタ
+        /// </summary>
+        /// <param name="init">初期状態指定(true:シグナル状態, false:非シグナル状態)</param>
+        /// <param name="keep_order">Wait順保持</param>
         public AutoResetEventAsync(bool init=false, bool keep_order=false)
         {
             _init_sw = init;
@@ -120,6 +133,11 @@ namespace AutoResetEventAsync
             Reset(_init_sw, _keep_order);
         }
 
+        /// <summary>
+        /// リセット
+        /// </summary>
+        /// <param name="init">初期状態指定(true:シグナル状態, false:非シグナル状態)</param>
+        /// <param name="keep_order">Wait順保持</param>
         public void Reset(bool init, bool keep_order)
         {
             if (_canceled == false)
