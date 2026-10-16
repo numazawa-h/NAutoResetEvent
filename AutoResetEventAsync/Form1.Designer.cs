@@ -1,4 +1,4 @@
-﻿namespace AutoResetEventAsync
+﻿namespace NAutoResetEventSample
 {
     partial class Form1
     {

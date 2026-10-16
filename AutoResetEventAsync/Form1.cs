@@ -1,4 +1,5 @@
-﻿using System;
+﻿using NCommonUtility;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -8,12 +9,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace AutoResetEventAsync
+namespace NAutoResetEventSample
 {
     public partial class Form1 : Form
     {
         int no = 0;
-        AutoResetEventAsync _event = new AutoResetEventAsync();
+        NAutoResetEvent _event = new NAutoResetEvent();
         public Form1()
         {
             InitializeComponent();

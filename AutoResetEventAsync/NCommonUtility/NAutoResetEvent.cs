@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace AutoResetEventAsync
+namespace NCommonUtility
 {
     /// <summary>
     /// AutoResetEventのラッパークラス
@@ -15,7 +15,7 @@ namespace AutoResetEventAsync
     /// 2. 待機順にタスクを実行
     ///   コンストラクタやReset()の引数指定により、Wait() した順にタスクが実行されるようになる
     /// </summary>
-    public class AutoResetEventAsync
+    public class NAutoResetEvent
     {
         private bool _init_sw;
         private bool _keep_order;
@@ -31,7 +31,7 @@ namespace AutoResetEventAsync
         /// </summary>
         /// <param name="init">初期状態指定(true:シグナル状態, false:非シグナル状態)</param>
         /// <param name="keep_order">Wait順保持</param>
-        public AutoResetEventAsync(bool init=false, bool keep_order=false)
+        public NAutoResetEvent(bool init=false, bool keep_order=false)
         {
             _init_sw = init;
             _keep_order = keep_order;
