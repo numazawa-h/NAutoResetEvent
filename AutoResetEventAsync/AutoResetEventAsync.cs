@@ -48,7 +48,6 @@ namespace AutoResetEventAsync
                         }
                     }
                     bool exit = false;
-                    bool skip = false;
                     while (exit == false)
                     {
                         if(tkn.IsCancellationRequested) {
@@ -63,14 +62,8 @@ namespace AutoResetEventAsync
                                 if (_seq.Peek() < seq)
                                 {
                                     exit = false;
-                                    skip = true;
                                     _event.Set();
                                 }
-                            }
-                            // skipなら他のタスクを先に実行
-                            if (skip)
-                            {
-                                Thread.Sleep(10);
                             }
                         }
                     }
@@ -102,7 +95,7 @@ namespace AutoResetEventAsync
         /// <summary>
         /// キャンセル
         /// </summary>
-        public void Cancel()
+        public async void Cancel()
         {
             lock (this)
             {
@@ -120,7 +113,7 @@ namespace AutoResetEventAsync
                 {
                     break;
                 }
-                Thread.Sleep(100);
+                await Task.Delay(100);
             }
         }
         public void Reset()
