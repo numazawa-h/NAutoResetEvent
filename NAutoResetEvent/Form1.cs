@@ -14,7 +14,7 @@ namespace NAutoResetEventSample
     public partial class Form1 : Form
     {
         int no = 0;
-        NAutoResetEvent _event = new NAutoResetEvent();
+        NAutoResetEvent _event = null;
         public Form1()
         {
             InitializeComponent();
@@ -22,11 +22,15 @@ namespace NAutoResetEventSample
 
         private void btn_Set_Click(object sender, EventArgs e)
         {
-            _event.Set();
+            _event?.Set();
         }
 
         private async void btn_Await_Click(object sender, EventArgs e)
         {
+            if (_event == null)
+            {
+                _event = new NAutoResetEvent(chk_InitSet.Checked, chk_KeepOrder.Checked);
+            }
             int n = ++no;
             this.lbl_AwaitNo.Text = n.ToString();
             if(await _event.Wait())
@@ -41,7 +45,14 @@ namespace NAutoResetEventSample
 
         private void btn_Reset_Click(object sender, EventArgs e)
         {
-            _event.Reset(chk_InitSet.Checked, chk_KeepOrder.Checked);
+            if (_event == null)
+            {
+                _event = new NAutoResetEvent(chk_InitSet.Checked, chk_KeepOrder.Checked);
+            }
+            else
+            {
+                _event.Reset(chk_InitSet.Checked, chk_KeepOrder.Checked);
+            }
             no = 0;
             this.lbl_AwaitNo.Text = no.ToString();
             this.textBox1.Text = "";
@@ -49,7 +60,7 @@ namespace NAutoResetEventSample
 
         private void btn_Cancel_Click(object sender, EventArgs e)
         {
-            _event.Cancel();
+            _event?.Cancel();
         }
     }
 }
