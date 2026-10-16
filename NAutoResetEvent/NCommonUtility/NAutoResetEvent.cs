@@ -107,7 +107,7 @@ namespace NCommonUtility
         /// <summary>
         /// キャンセル
         /// </summary>
-        public async void Cancel()
+        public void Cancel()
         {
             lock (this)
             {
@@ -125,7 +125,7 @@ namespace NCommonUtility
                 {
                     break;
                 }
-                await Task.Delay(100);
+                System.Threading.Thread.Sleep(10);
             }
         }
         public void Reset()
