@@ -34,53 +34,52 @@ namespace AutoResetEventAsync
         public async Task<bool> Wait()
         {
             Task<bool> task;
-            lock (this)
+            var tkn = _token;
+            task = Task<bool>.Run(() =>
             {
-                var tkn = _token;
-                task = Task<bool>.Run(() => {
-                    int seq;
-                    lock (this)
+                int seq;
+                lock (this)
+                {
+                    seq = ++_seq_no;
+                    if (_keep_order)
                     {
-                        seq = ++_seq_no;
-                        if (_keep_order)
-                        {
-                            _seq.Enqueue(seq);
-                        }
+                        _seq.Enqueue(seq);
                     }
-                    bool exit = false;
-                    while (exit == false)
+                }
+                bool exit = false;
+                while (exit == false)
+                {
+                    if (tkn.IsCancellationRequested)
                     {
-                        if(tkn.IsCancellationRequested) {
-                            break; 
-                        }
-                        exit = _event.WaitOne(50);
-                        if (exit && _keep_order)
+                        break;
+                    }
+                    exit = _event.WaitOne(50);
+                    if (exit && _keep_order)
+                    {
+                        lock (this)
                         {
-                            lock (this)
+                            // 順番に実行する（先頭でなければskip）
+                            if (_seq.Peek() < seq)
                             {
-                                // 順番に実行する（先頭でなければskip）
-                                if (_seq.Peek() < seq)
-                                {
-                                    exit = false;
-                                    _event.Set();
-                                }
+                                exit = false;
+                                _event.Set();
                             }
                         }
                     }
-                    lock (this)
+                }
+                lock (this)
+                {
+                    if (_keep_order)
                     {
-                        if (_keep_order)
-                        {
-                            _seq.Dequeue();
-                        }
-                        else
-                        {
-                            --_seq_no;
-                        }
+                        _seq.Dequeue();
                     }
-                    return exit;
-                });
-            }
+                    else
+                    {
+                        --_seq_no;
+                    }
+                }
+                return exit;
+            });
             return await task;
         }
 
